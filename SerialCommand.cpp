@@ -77,7 +77,7 @@ void SerialCommand::readSerial() {
       Serial.print(inChar);   // Echo back to serial stream
     #endif
 
-    if (inChar == term) {     // Check for the terminator (default '\r') meaning end of command
+    if (inChar == term || inChar == ';') {     // Check for the terminators (default '\r' and ';') meaning end of command
       #ifdef SERIALCOMMAND_DEBUG
         Serial.print("Received: ");
         Serial.println(buffer);
