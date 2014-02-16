@@ -6,7 +6,7 @@
  * Copyright (C) 2011 Steven Cogswell <steven.cogswell@gmail.com>
  *                    http://husks.wordpress.com
  * 
- * Updated for blank line support by DeKay, Feb 2014
+ * Updated for blank line support & an alternate line terminator by DeKay, Feb 2014
  * 
  * This library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -32,6 +32,7 @@ SerialCommand::SerialCommand()
     defaultHandler(NULL),
     nullHandler(NULL),
     term('\n'),           // default terminator for commands, newline character
+    term2('\r'),          // default alternate terminator for commands, carriage return character
     last(NULL)
 {
   strcpy(delim, " "); // strtok_r needs a null-terminated string
@@ -85,7 +86,7 @@ void SerialCommand::readSerial() {
       Serial.print(inChar);   // Echo back to serial stream
     #endif
 
-    if (inChar == term) {     // Check for the terminator (default '\r') meaning end of command
+    if ((inChar == term) || (inChar == term2)) {  // Check for the terminators ('\n') or ('\r') meaning end of command
       #ifdef SERIALCOMMAND_DEBUG
         Serial.print("Received: ");
         Serial.println(buffer);

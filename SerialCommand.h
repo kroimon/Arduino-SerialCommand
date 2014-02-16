@@ -6,7 +6,7 @@
  * Copyright (C) 2011 Steven Cogswell <steven.cogswell@gmail.com>
  *                    http://husks.wordpress.com
  * 
- * Updated for blank line support by DeKay, Feb 2014
+ * Updated for blank line support & an alternate line terminator by DeKay, Feb 2014
  * 
  * This library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -69,6 +69,7 @@ class SerialCommand {
 
     char delim[2]; // null-terminated list of character to be used as delimeters for tokenizing (default " ")
     char term;     // Character that signals end of command (default '\n')
+    char term2;    // Alternate character that signals end of command (default '\r')
 
     char buffer[SERIALCOMMAND_BUFFER + 1]; // Buffer of stored characters while waiting for terminator character
     byte bufPos;                        // Current position in the buffer
