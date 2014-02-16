@@ -6,7 +6,7 @@
  * Copyright (C) 2011 Steven Cogswell <steven.cogswell@gmail.com>
  *                    http://husks.wordpress.com
  * 
- * Version 20120522
+ * Updated for blank line support by DeKay, Feb 2014
  * 
  * This library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -30,6 +30,7 @@ SerialCommand::SerialCommand()
   : commandList(NULL),
     commandCount(0),
     defaultHandler(NULL),
+    nullHandler(NULL),
     term('\n'),           // default terminator for commands, newline character
     last(NULL)
 {
@@ -64,6 +65,13 @@ void SerialCommand::setDefaultHandler(void (*function)(const char *)) {
   defaultHandler = function;
 }
 
+/**
+ * This sets up a handler to be called in the event that the user hits enter on a
+ * blank line
+ */
+void SerialCommand::setNullHandler(void (*function)()) {
+  nullHandler = function;
+}
 
 /**
  * This checks the Serial stream for characters, and assembles them into a buffer.
@@ -111,6 +119,8 @@ void SerialCommand::readSerial() {
         if (!matched && (defaultHandler != NULL)) {
           (*defaultHandler)(command);
         }
+      } else {
+        (*nullHandler)();
       }
       clearBuffer();
     }

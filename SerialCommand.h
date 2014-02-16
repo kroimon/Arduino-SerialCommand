@@ -6,7 +6,7 @@
  * Copyright (C) 2011 Steven Cogswell <steven.cogswell@gmail.com>
  *                    http://husks.wordpress.com
  * 
- * Version 20120522
+ * Updated for blank line support by DeKay, Feb 2014
  * 
  * This library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -47,6 +47,7 @@ class SerialCommand {
     SerialCommand();      // Constructor
     void addCommand(const char *command, void(*function)());  // Add a command to the processing dictionary.
     void setDefaultHandler(void (*function)(const char *));   // A handler to call when no valid command received.
+    void setNullHandler(void (*function)());      // A handler to call when empty command received.
 
     void readSerial();    // Main entry point.
     void clearBuffer();   // Clears the input buffer.
@@ -63,6 +64,8 @@ class SerialCommand {
 
     // Pointer to the default handler function
     void (*defaultHandler)(const char *);
+    // Pointer to the null handler function
+    void (*nullHandler)();
 
     char delim[2]; // null-terminated list of character to be used as delimeters for tokenizing (default " ")
     char term;     // Character that signals end of command (default '\n')

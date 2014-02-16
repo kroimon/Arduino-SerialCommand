@@ -10,6 +10,7 @@ SerialCommand KEYWORD1
 
 addCommand        KEYWORD2
 setDefaultHandler KEYWORD2
+setNullHandler    KEYWORD2
 readSerial        KEYWORD2
 clearBuffer       KEYWORD2
 next              KEYWORD2

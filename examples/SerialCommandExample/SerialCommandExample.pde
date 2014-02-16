@@ -1,6 +1,7 @@
 // Demo Code for SerialCommand Library
 // Steven Cogswell
 // May 2011
+// Updated for blank line support by DeKay, Feb 2014
 
 #include <SerialCommand.h>
 
@@ -20,6 +21,7 @@ void setup() {
   sCmd.addCommand("HELLO", sayHello);        // Echos the string argument back
   sCmd.addCommand("P",     processCommand);  // Converts two arguments to integers and echos them back
   sCmd.setDefaultHandler(unrecognized);      // Handler for command that isn't matched  (says "What?")
+  sCmd.setNullHandler(blankLine);            // Handler for a blank line  (says "No Input.")
   Serial.println("Ready");
 }
 
@@ -80,4 +82,9 @@ void processCommand() {
 // This gets set as the default handler, and gets called when no other command matches.
 void unrecognized(const char *command) {
   Serial.println("What?");
+}
+
+// This gets set as the null handler, and gets called a blank line is received.
+void blankLine() {
+  Serial.println("No input.");
 }
