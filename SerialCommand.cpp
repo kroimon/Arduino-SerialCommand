@@ -1,23 +1,24 @@
 /**
  * SerialCommand - A Wiring/Arduino library to tokenize and parse commands
  * received over a serial port.
- * 
+ *
  * Copyright (C) 2012 Stefan Rado
  * Copyright (C) 2011 Steven Cogswell <steven.cogswell@gmail.com>
  *                    http://husks.wordpress.com
- * 
- * Updated for blank line support & an alternate line terminator by DeKay, Feb 2014
- * 
+ *
+ * Updated for blank line support, an alternate line terminator, and a
+ * non-printable character in the input buffer by DeKay, Feb 2014
+ *
  * This library is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this library.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -125,7 +126,11 @@ void SerialCommand::readSerial() {
       }
       clearBuffer();
     }
-    else if (isprint(inChar)) {     // Only printable characters into the buffer
+    // Only printable characters into the buffer EXCEPT for 0x12.
+    // This is necessary to implement the WRD<0x12><0x4d> command used by
+    // WeeWx when talking to a Davis weather station. Note 0x4d is printable
+    // so it does not need an exception below.
+    else if (isprint(inChar) || (inChar == 0x12)) {
       if (bufPos < SERIALCOMMAND_BUFFER) {
         buffer[bufPos++] = inChar;  // Put character into buffer
         buffer[bufPos] = '\0';      // Null terminate
