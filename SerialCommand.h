@@ -28,6 +28,7 @@
   #include <Wiring.h>
 #elif defined(ARDUINO) && ARDUINO >= 100
   #include <Arduino.h>
+  #include <HardWareserial.h>
 #else
   #include <WProgram.h>
 #endif
@@ -44,7 +45,8 @@
 
 class SerialCommand {
   public:
-    SerialCommand();      // Constructor
+    SerialCommand(HardwareSerial *serial);      // Constructor
+    //SerialCommand(Serial_ *serial);      // Constructor
     void addCommand(const char *command, void(*function)());  // Add a command to the processing dictionary.
     void setDefaultHandler(void (*function)(const char *));   // A handler to call when no valid command received.
 
@@ -70,6 +72,9 @@ class SerialCommand {
     char buffer[SERIALCOMMAND_BUFFER + 1]; // Buffer of stored characters while waiting for terminator character
     byte bufPos;                        // Current position in the buffer
     char *last;                         // State variable used by strtok_r during processing
+
+    HardwareSerial *_HardSerial;
+    //Serial_ *_Serial;
 };
 
 #endif //SerialCommand_h
