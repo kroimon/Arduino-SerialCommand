@@ -34,12 +34,15 @@ SerialCommand::SerialCommand(HardwareSerial *serial)
     last(NULL)
 {
   _HardSerial = serial;
-  //_Serial = NULL;
+#ifndef __NO_SERIAL___
+  _Serial = NULL;
+#endif
   strcpy(delim, " "); // strtok_r needs a null-terminated string
   clearBuffer();
 }
 
-/*SerialCommand::SerialCommand(Serial_ *serial)
+#ifndef __NO_SERIAL___
+SerialCommand::SerialCommand(Serial_ *serial)
   : commandList(NULL),
     commandCount(0),
     defaultHandler(NULL),
@@ -47,10 +50,13 @@ SerialCommand::SerialCommand(HardwareSerial *serial)
     last(NULL)
 {
   _HardSerial = NULL;
+#ifndef  __NO_SERIAL___
   _Serial = serial;
+#endif
   strcpy(delim, " "); // strtok_r needs a null-terminated string
   clearBuffer();
-}*/
+}
+#endif
 
 /**
  * Adds a "command" and a handler function to the list of available commands.
@@ -142,7 +148,8 @@ void SerialCommand::readSerial() {
 	      }
 	    }
 	  }
-  }/* else if (_Serial){
+#ifndef __NO_SERIAL___
+  } else if (_Serial){
 	  while (_Serial->available() > 0) {
 	    char inChar = _Serial->read();   // Read single available character, there may be more waiting
 	    #ifdef SERIALCOMMAND_DEBUG
@@ -197,7 +204,8 @@ void SerialCommand::readSerial() {
 	      }
 	    }
 	  }
-  }*/
+#endif
+  }
 }
 
 /*

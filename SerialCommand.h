@@ -24,11 +24,15 @@
 #ifndef SerialCommand_h
 #define SerialCommand_h
 
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+#define __NO_SERIAL___
+#endif
+
 #if defined(WIRING) && WIRING >= 100
   #include <Wiring.h>
 #elif defined(ARDUINO) && ARDUINO >= 100
   #include <Arduino.h>
-  #include <HardWareserial.h>
+  #include <HardwareSerial.h>
 #else
   #include <WProgram.h>
 #endif
@@ -46,7 +50,9 @@
 class SerialCommand {
   public:
     SerialCommand(HardwareSerial *serial);      // Constructor
-    //SerialCommand(Serial_ *serial);      // Constructor
+    #ifndef __NO_SERIAL___
+    SerialCommand(Serial_ *serial);      // Constructor
+    #endif
     void addCommand(const char *command, void(*function)());  // Add a command to the processing dictionary.
     void setDefaultHandler(void (*function)(const char *));   // A handler to call when no valid command received.
 
@@ -74,7 +80,9 @@ class SerialCommand {
     char *last;                         // State variable used by strtok_r during processing
 
     HardwareSerial *_HardSerial;
-    //Serial_ *_Serial;
+    #ifndef __NO_SERIAL___
+    Serial_ *_Serial;
+    #endif
 };
 
 #endif //SerialCommand_h
