@@ -42,7 +42,7 @@ SerialCommand::SerialCommand(HardwareSerial *serial)
 }
 
 #ifndef __NO_SERIAL___
-SerialCommand::SerialCommand(Serial_ *serial)
+SerialCommand::SerialCommand(SOFTSERIAL_ *serial)
   : commandList(NULL),
     commandCount(0),
     defaultHandler(NULL),

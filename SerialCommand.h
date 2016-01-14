@@ -30,9 +30,14 @@
 
 #if defined(WIRING) && WIRING >= 100
   #include <Wiring.h>
+#elif defined(__MK20DX128__) || defined(__MK20DX256__)
+  #include <Arduino.h>
+  #include <usb_serial.h>
+  #define SOFTSERIAL_ usb_serial_class
 #elif defined(ARDUINO) && ARDUINO >= 100
   #include <Arduino.h>
   #include <HardwareSerial.h>
+  #define SOFTSERIAL_ Serial_
 #else
   #include <WProgram.h>
 #endif
@@ -51,7 +56,7 @@ class SerialCommand {
   public:
     SerialCommand(HardwareSerial *serial);      // Constructor
     #ifndef __NO_SERIAL___
-    SerialCommand(Serial_ *serial);      // Constructor
+    SerialCommand(SOFTSERIAL_ *serial);      // Constructor
     #endif
     void addCommand(const char *command, void(*function)());  // Add a command to the processing dictionary.
     void setDefaultHandler(void (*function)(const char *));   // A handler to call when no valid command received.
@@ -81,7 +86,7 @@ class SerialCommand {
 
     HardwareSerial *_HardSerial;
     #ifndef __NO_SERIAL___
-    Serial_ *_Serial;
+    SOFTSERIAL_ *_Serial;
     #endif
 };
 
