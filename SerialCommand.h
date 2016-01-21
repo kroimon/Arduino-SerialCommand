@@ -29,16 +29,26 @@
 #endif
 
 #if defined(WIRING) && WIRING >= 100
+  #pragma message ( "Found Wiring")
   #include <Wiring.h>
 #elif defined(__MK20DX128__) || defined(__MK20DX256__)
   #include <Arduino.h>
-  #include <usb_serial.h>
-  #define SOFTSERIAL_ usb_serial_class
+  #ifdef USB_RAWHID
+	#pragma message ( "Found Teensy in RawHID mode.")
+	#include <usb_seremu.h>
+	#define SOFTSERIAL_ usb_seremu_class
+  #else
+	#pragma message ( "Found Teensy in Serial mode.")
+	#include <usb_serial.h>
+	#define SOFTSERIAL_ usb_serial_class
+  #endif
 #elif defined(ARDUINO) && ARDUINO >= 100
+  #pragma message ( "Found Arduino 1.0+")
   #include <Arduino.h>
   #include <HardwareSerial.h>
   #define SOFTSERIAL_ Serial_
 #else
+  #pragma message ( "Found old Arduino")
   #include <WProgram.h>
 #endif
 #include <string.h>

@@ -36,6 +36,9 @@ SerialCommand::SerialCommand(HardwareSerial *serial)
   _HardSerial = serial;
 #ifndef __NO_SERIAL___
   _Serial = NULL;
+#ifdef SOFTSERIAL2_
+SOFTSERIAL2_ *Serial2;      // Constructor
+#endif
 #endif
   strcpy(delim, " "); // strtok_r needs a null-terminated string
   clearBuffer();
