@@ -124,6 +124,11 @@ void SerialCommand::readSerial() {
         #endif
       }
     }
+    else if (inChar == 127 || inChar == 8) {
+        bufPos--;
+        buffer[bufPos] = 0;
+        Serial.print(" \b");
+    }
   }
 }
 
