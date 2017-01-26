@@ -48,7 +48,7 @@ class SerialCommand {
     void addCommand(const char *command, void(*function)());  // Add a command to the processing dictionary.
     void setDefaultHandler(void (*function)(const char *));   // A handler to call when no valid command received.
 
-    void readSerial(Stream &stream);    // Main entry point.
+    void readSerial(Stream &stream = Serial);    // Main entry point.
     void clearBuffer();   // Clears the input buffer.
     char *next();         // Returns pointer to next token found in command buffer (for getting arguments to commands).
 
