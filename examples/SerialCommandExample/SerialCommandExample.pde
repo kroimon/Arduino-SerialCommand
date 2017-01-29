@@ -19,6 +19,8 @@ void setup() {
   sCmd.addCommand("OFF",   LED_off);         // Turns LED off
   sCmd.addCommand("HELLO", sayHello);        // Echos the string argument back
   sCmd.addCommand("P",     processCommand);  // Converts two arguments to integers and echos them back
+  sCmd.setAddress('A');                      // Sets the address for any calls to addCommandWithAddr()
+  sCmd.addCommandWithAddr("GOODBYE", sayGoodbye); //Adds the command "AGOODBYE" to the list of available commands
   sCmd.setDefaultHandler(unrecognized);      // Handler for command that isn't matched  (says "What?")
   Serial.println("Ready");
 }
@@ -50,6 +52,9 @@ void sayHello() {
   }
 }
 
+void sayGoodbye(){
+  Serial.println("Adios");
+}
 
 void processCommand() {
   int aNumber;
