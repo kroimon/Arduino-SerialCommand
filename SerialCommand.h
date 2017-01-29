@@ -46,8 +46,9 @@ class SerialCommand {
   public:
     SerialCommand();      // Constructor
     void addCommand(const char *command, void(*function)());  // Add a command to the processing dictionary.
+    void addCommandWithAddr(const char *command, void(*function)());//Add a command to the processing dictionary with address.
     void setDefaultHandler(void (*function)(const char *));   // A handler to call when no valid command received.
-
+    void setAddress(char addin);
     void readSerial(Stream &stream = Serial);    // Main entry point.
     void clearBuffer();   // Clears the input buffer.
     char *next();         // Returns pointer to next token found in command buffer (for getting arguments to commands).
@@ -70,6 +71,7 @@ class SerialCommand {
     char buffer[SERIALCOMMAND_BUFFER + 1]; // Buffer of stored characters while waiting for terminator character
     byte bufPos;                        // Current position in the buffer
     char *last;                         // State variable used by strtok_r during processing
+    char address;
 };
 
 #endif //SerialCommand_h
