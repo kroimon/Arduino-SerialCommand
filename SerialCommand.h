@@ -24,11 +24,31 @@
 #ifndef SerialCommand_h
 #define SerialCommand_h
 
+#if defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__)
+#define __NO_SERIAL___
+#endif
+
 #if defined(WIRING) && WIRING >= 100
+  #pragma message ( "Found Wiring")
   #include <Wiring.h>
-#elif defined(ARDUINO) && ARDUINO >= 100
+#elif defined(__MK20DX128__) || defined(__MK20DX256__)
   #include <Arduino.h>
+  #ifdef USB_RAWHID
+	#pragma message ( "Found Teensy in RawHID mode.")
+	#include <usb_seremu.h>
+	#define SOFTSERIAL_ usb_seremu_class
+  #else
+	#pragma message ( "Found Teensy in Serial mode.")
+	#include <usb_serial.h>
+	#define SOFTSERIAL_ usb_serial_class
+  #endif
+#elif defined(ARDUINO) && ARDUINO >= 100
+  #pragma message ( "Found Arduino 1.0+")
+  #include <Arduino.h>
+  #include <HardwareSerial.h>
+  #define SOFTSERIAL_ Serial_
 #else
+  #pragma message ( "Found old Arduino")
   #include <WProgram.h>
 #endif
 #include <string.h>
@@ -44,7 +64,10 @@
 
 class SerialCommand {
   public:
-    SerialCommand();      // Constructor
+    SerialCommand(HardwareSerial *serial);      // Constructor
+    #ifndef __NO_SERIAL___
+    SerialCommand(SOFTSERIAL_ *serial);      // Constructor
+    #endif
     void addCommand(const char *command, void(*function)());  // Add a command to the processing dictionary.
     void setDefaultHandler(void (*function)(const char *));   // A handler to call when no valid command received.
 
@@ -70,6 +93,11 @@ class SerialCommand {
     char buffer[SERIALCOMMAND_BUFFER + 1]; // Buffer of stored characters while waiting for terminator character
     byte bufPos;                        // Current position in the buffer
     char *last;                         // State variable used by strtok_r during processing
+
+    HardwareSerial *_HardSerial;
+    #ifndef __NO_SERIAL___
+    SOFTSERIAL_ *_Serial;
+    #endif
 };
 
 #endif //SerialCommand_h
