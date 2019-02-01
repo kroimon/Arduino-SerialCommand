@@ -57,6 +57,23 @@ void SerialCommand::addCommand(const char *command, void (*function)()) {
 }
 
 /**
+ * Similar to the addCommand() function above, this appends char address to the beginning of the command.
+ * This is intended to assist in RS-485 situations where addressing is required.
+ */
+void SerialCommand::addCommandWithAddr(const char *command, void (*function)()){
+  String tmp = String(address)+String(command);
+  char charBuf[50];
+  tmp.toCharArray(charBuf,50);
+  commandList = (SerialCommandCallback *) realloc(commandList, (commandCount + 1) * sizeof(SerialCommandCallback));
+  strncpy(commandList[commandCount].command, charBuf, SERIALCOMMAND_MAXCOMMANDLENGTH);
+  commandList[commandCount].function = function;
+  commandCount++;
+}
+
+void SerialCommand::setAddress(char addin){
+  address = addin;
+}
+/**
  * This sets up a handler to be called in the event that the receveived command string
  * isn't in the list of commands.
  */
@@ -70,9 +87,9 @@ void SerialCommand::setDefaultHandler(void (*function)(const char *)) {
  * When the terminator character (default '\n') is seen, it starts parsing the
  * buffer for a prefix command, and calls handlers setup by addCommand() member
  */
-void SerialCommand::readSerial() {
-  while (Serial.available() > 0) {
-    char inChar = Serial.read();   // Read single available character, there may be more waiting
+void SerialCommand::readSerial(Stream &stream) {
+  while (stream.available() > 0) {
+    char inChar = stream.read();   // Read single available character, there may be more waiting
     #ifdef SERIALCOMMAND_DEBUG
       Serial.print(inChar);   // Echo back to serial stream
     #endif
