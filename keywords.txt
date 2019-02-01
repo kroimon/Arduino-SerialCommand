@@ -2,7 +2,7 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-SerialCommand KEYWORD1
+SerialCommand	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
