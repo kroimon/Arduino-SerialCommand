@@ -35,19 +35,20 @@
 
 #include "Stream.h"
 
+#include "TransientFunction.hpp"
+
+typedef TransientFunction<void(void*)> voidFunc;
+
 // Size of the input buffer in bytes (maximum length of one command plus arguments)
 #define SERIALCOMMAND_BUFFER 32
 // Maximum length of a command excluding the terminating null
 #define SERIALCOMMAND_MAXCOMMANDLENGTH 8
 
-// Uncomment the next line to run the library in debug mode (verbose messages)
-//#define SERIALCOMMAND_DEBUG
-
-
 class SerialCommand {
   public:
     SerialCommand(Stream *stream = &Serial);
     void addCommand(const char *command, void(*function)());  // Add a command to the processing dictionary.
+    void addCommand(const char *command, void *object, const voidFunc &function);  // Add a command to the processing dictionary, where \p function is the function to be called which will be passed \p object
     void setDefaultHandler(void (*function)(const char *));   // A handler to call when no valid command received.
 
     void readSerial();    // Main entry point.
@@ -58,7 +59,9 @@ class SerialCommand {
     // Command/handler dictionary
     struct SerialCommandCallback {
       char command[SERIALCOMMAND_MAXCOMMANDLENGTH + 1];
-      void (*function)();
+      void *arg = nullptr;
+      voidFunc wrapped;
+      void (*function)() = nullptr;
     };                                    // Data structure to hold Command/Handler function key-value pairs
     SerialCommandCallback *commandList;   // Actual definition for command/handler array
     byte commandCount;

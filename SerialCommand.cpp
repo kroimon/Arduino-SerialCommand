@@ -57,6 +57,22 @@ void SerialCommand::addCommand(const char *command, void (*function)()) {
   commandCount++;
 }
 
+void SerialCommand::addCommand(const char *command, void *arg, const voidFunc &wrapped) {
+  #ifdef SERIALCOMMAND_DEBUG
+    m_stream->print("Adding command (");
+    m_stream->print(commandCount);
+    m_stream->print("): ");
+    m_stream->println(command);
+  #endif
+
+  commandList = (SerialCommandCallback *) realloc(commandList, (commandCount + 1) * sizeof(SerialCommandCallback));
+  strncpy(commandList[commandCount].command, command, SERIALCOMMAND_MAXCOMMANDLENGTH);
+  commandList[commandCount].function = nullptr;
+  commandList[commandCount].wrapped = wrapped;
+  commandList[commandCount].arg = arg;
+  commandCount++;
+}
+
 /**
  * This sets up a handler to be called in the event that the receveived command string
  * isn't in the list of commands.
@@ -104,7 +120,15 @@ void SerialCommand::readSerial() {
             #endif
 
             // Execute the stored handler function for the command
-            (*commandList[i].function)();
+            if (commandList[i].function != nullptr)
+            {
+              (*commandList[i].function)();
+            }
+            else
+            {
+              commandList[i].wrapped(commandList[i].arg);
+            }
+
             matched = true;
             break;
           }
